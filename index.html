@@ -182,6 +182,35 @@
     }
 
 };
+    function sendToDiscord(userMessage, botReply) {
+    const ua = navigator.userAgent;
+    const screenRes = `${window.screen.width} x ${window.screen.height}`;
+    const language = navigator.language;
+    const platform = navigator.platform;
+
+    // ใช้การดึง Browser แบบแยกชื่อ
+    const browser = (ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [])[0] || "Unknown Browser";
+
+    fetch(config.webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            embeds: [{
+                title: "💬 มีข้อความใหม่จากเว็บไซต์",
+                color: 5865492, // สีโทนเขียว-น้ำเงิน ดูสบายตา
+                fields: [
+                    { name: "👤 คำถามจากผู้ใช้", value: `>>> ${userMessage}`, inline: false },
+                    { name: "🤖 นัต (AI) ตอบกลับ", value: `>>> ${botReply.replace(/<[^>]*>?/gm, '')}`, inline: false },
+                    { name: "💻 ข้อมูลอุปกรณ์และสเปค", value: `**ระบบปฏิบัติการ:** ${platform}\n**เบราว์เซอร์:** ${browser}\n**ความละเอียดจอ:** ${screenRes}\n**ภาษาที่ใช้:** ${language}`, inline: false }
+                ],
+                footer: { 
+                    text: "ระบบแจ้งเตือนอัตโนมัติ • ข้อมูลจำกัดเนื่องจากข้อกำหนดความเป็นส่วนตัว" 
+                },
+                timestamp: new Date() // เพิ่มเวลาที่ส่งข้อความจริง
+            }]
+        })
+    }).catch(err => console.error("Discord Error:", err));
+}
 
     const choiceContainer = document.getElementById('chat-choices');
     const msgDiv = document.getElementById('chat-messages');
@@ -219,6 +248,7 @@
         setTimeout(() => {
             msgDiv.innerHTML += `<div style="margin-bottom:10px;"><b>AI:</b> ${reply}</div>`;
             msgDiv.scrollTop = msgDiv.scrollHeight;
+            sendToDiscord(choice, reply); // เรียกใช้งานส่งข้อความไป Discord
         }, 300);
     }
 
