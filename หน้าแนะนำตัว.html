@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NUTT's Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root { 
+            --bg-color: #e0f2fe; 
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --accent-color: #4f46e5;
+        }
+        
+        body { 
+            font-family: 'Kanit', sans-serif; 
+            background: var(--bg-color); 
+            margin: 0; 
+            padding: 15px; 
+            display: flex; 
+            justify-content: center; 
+            min-height: 100vh;
+        }
+        
+        .container { 
+            width: 100%; 
+            max-width: 450px; 
+            background: var(--card-bg); 
+            backdrop-filter: blur(15px); 
+            padding: 25px; 
+            border-radius: 30px; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08); 
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes breathing { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
+        
+        .profile-pic { 
+            width: 140px; 
+            height: 140px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            border: 5px solid #fff; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin: 15px 0; 
+            animation: breathing 4s ease-in-out infinite;
+        }
+
+        h1 { margin: 10px 0 5px; font-size: 1.8rem; color: #1e293b; }
+        p { color: #64748b; font-size: 0.95rem; margin-bottom: 20px; }
+
+        .page { display: none; } 
+        .active { display: block; }
+        
+        .btn { padding: 12px 20px; cursor: pointer; border-radius: 50px; border: none; background: var(--accent-color); color: white; margin: 10px 0; width: 100%; font-weight: bold; transition: 0.3s; }
+        .btn:hover { transform: translateY(-3px); background: #4338ca; }
+        
+        .mini-btn { font-size: 13px; padding: 6px 14px; background: #e2e8f0; border: none; border-radius: 50px; cursor: pointer; margin-top: 10px; color: #475569; transition: 0.3s; }
+        
+        .social-container { display: flex; justify-content: center; gap: 25px; margin: 20px 0; flex-wrap: wrap; }
+        .social-btn { font-size: 28px; opacity: 0.8; transition: 0.3s; }
+        .social-btn:hover { transform: scale(1.2); opacity: 1; }
+        
+        .status-dot { height: 10px; width: 10px; background-color: #22c55e; border-radius: 50%; display: inline-block; margin-right: 5px; }
+        #greeting { font-weight: bold; color: var(--accent-color); margin-bottom: 5px; font-size: 1.1rem; }
+
+        /* Chat Widget Style */
+        #chat-window { display: none; position: fixed; bottom: 90px; right: 20px; width: 300px; max-width: 85%; height: 400px; background: white; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 9998; flex-direction: column; overflow: hidden; border: none; }
+        .youtube-frame { width: 100%; aspect-ratio: 16/9; border: 0; border-radius: 20px; background: #000; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="home" class="page active">
+        <div><span class="status-dot"></span> Online - พร้อมดูแลคุณเสมอครับ</div>
+        <h3 id="greeting"></h3>
+        
+        <img id="profile-img" src="" class="profile-pic">
+        <h1>NUTT</h1>
+        <p>IT Student | ดูแลคุณได้มากกว่าคอมพิวเตอร์</p>
+
+        <div class="social-container" id="socialLinks"></div>
+
+        <div style="margin: 20px 0; background: white; padding: 15px; border-radius: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+            <iframe id="main-yt-player" class="youtube-frame" src="" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            <button class="mini-btn" onclick="showPage('music')">ดูเพลงอื่นๆ เพิ่มเติม >></button>
+        </div>
+
+        <div id="hobbies-container" style="margin: 20px 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h4 style="color:#64748b; margin:0;">งานอดิเรก</h4>
+                <button class="mini-btn" onclick="toggleHobbyLayout()">สลับโหมด</button>
+            </div>
+            <div id="hobbies-list" style="display: flex; flex-direction: column; gap: 5px; align-items: center;"></div>
+        </div>
+    </div>
+
+    <div id="music" class="page">
+        <button class="btn" style="background:#64748b; margin-bottom: 20px;" onclick="showPage('home')">
+            <i class="fas fa-arrow-left"></i> กลับหน้าหลัก
+        </button>
+        
+        <h2>My Music List</h2>
+        <div id="full-music-list"></div>
+    </div>
+
+<button id="chat-toggle-btn" style="position:fixed; bottom:20px; right:20px; z-index:9999; width:60px; height:60px; border-radius:50%; background:#4f46e5; color:white; border:none; cursor:pointer; box-shadow:0 4px 20px rgba(79, 70, 229, 0.4);">
+    <i class="fas fa-comment-dots" style="font-size:24px;"></i>
+</button>
+
+<div id="chat-window">
+    <div style="background:#4f46e5; color:white; padding:15px; text-align:center; font-weight:bold;">แชทกับ ตัวแทน นัต</div>
+    <div id="chat-messages" style="flex:1; padding:15px; overflow-y:auto; font-size:14px; color:#333; text-align:left;">
+        <div style="margin-bottom:10px;">โย่! มีอะไรอยากถามนัตมั้ย? จิ้มเลือกคำถามด้านล่างได้เลยนะ!</div>
+    </div>
+    <div id="chat-choices" style="padding:10px; display:flex; flex-wrap:wrap; gap:5px; border-top:1px solid #eee; justify-content:center;"></div>
+</div>
+
+<script>
+    const config = {
+        profileImages: [
+            "https://media.discordapp.net/attachments/1515884744733233314/1525805020291793036/31132288733f70e7c05d10bc3a104f59.gif?ex=6a54b828&is=6a5366a8&hm=9438ef5af8140071980ff590eef282cbdcfe822ba13542f1e89a61d0914223e3&=",
+            "https://media.discordapp.net/attachments/1515884744733233314/1525804851567525938/300664275_439943731488554_4247432938376776043_n.jpg?ex=6a54b800&is=6a536680&hm=dd32079b2a62596c3cdc1685fd0f76e5ca162bf6d0220d8dee7230d72f0a5771&=&format=webp&width=783&height=779"
+        ],
+        hobbies: [
+            { name: "ดูอนิเมะ", show: true },
+            { name: "เล่นเกม", show: true },
+            { name: "ดู YouTube", show: true },
+            { name: "ดู IG", show: true },
+            { name: "อยู่ในดิสคอร์ด", show: true }
+        ],
+        musicList: [
+            "https://www.youtube.com/embed/DJq0jJhPSjg", 
+            "https://youtu.be/F98j9IcSfdc?si=lGy0IY8oSH7DDkjf", 
+            "https://youtu.be/ssKJYCw7Z7c?si=7Ug40irR2cIeiVkA", 
+            "https://www.youtube.com/watch?v=Ik228UkBp6w&list=RDIk228UkBp6w&start_radio=1", 
+            "https://www.youtube.com/watch?v=k7qg9Q0w_m0&list=RDk7qg9Q0w_m0&start_radio=1", 
+            "https://www.youtube.com/watch?v=dfPJoRI7JVE", 
+            "https://www.youtube.com/watch?v=ebxzxo_q89Y&list=RDk7qg9Q0w_m0&index=5"
+        ],
+        socials: [
+            { url: "https://discord.gg/wAGZGyEjQH", iconClass: "fab fa-discord", color: "#5865F2" },
+            { url: "https://www.instagram.com/_nuttsume/", iconClass: "fab fa-instagram", color: "#E1306C" },
+            { url: "https://open.spotify.com/user/317tsqx2bfvb34z2xcw7jouksxua", iconClass: "fab fa-spotify", color: "#1DB954" },
+            { url: "https://www.tiktok.com/@nuttsume_chan", iconClass: "fab fa-tiktok", color: "#000000" }
+        ],
+        webhookUrl: "ใส่_WEBHOOK_URL_ของ_GOOGLE_CHAT_ที่นี่"
+    };
+
+    const chatData = {
+        "โสดไหม?": { a: "โสดครับ! แถมนิสัยขี้อ้อนด้วยนะ... สนใจมาดูแลนัตหน่อยไหมครับ? อิอิ 😜" },
+        "ช่องทางติดต่อ": { a: "อยากติดต่อทางไหนดีครับ? เลือกด้านล่างได้เลย!", options: ["IG", "Discord"] },
+        "แนะนำตัวหน่อย?": {
+        a: `<b>สวัสดีครับ ผมขอแนะนำตัวนะครับ!</b><br><br>
+            • <b>ชื่อเล่น:</b> นัต<br>
+            • <b>อายุ:</b> 22 ปี<br>
+            • <b>ส่วนสูง:</b> 173 ซม.<br>
+            • <b>สถานะการศึกษา:</b> IT Student 💻<br>
+            • <b>สถานะหัวใจ:</b> โสด 1000%<br>
+            • <b>รูปร่าง:</b> หุ่นหมี 🐻<br><br>
+            <b>นิสัยส่วนตัว:</b><br>
+            เป็นคนคุยไม่เก่งเท่าไหร่ แต่ถ้าได้ลองเปิดใจจะรู้ว่าเป็นคนรักจริงนะครับ! ปกตินัตเป็นคนติดเล่นและขี้แกล้งสุดๆ แต่ถ้าถึงเวลาต้องจริงจังขึ้นมา นัตก็โฟกัสเต็มที่ ส่วนนิสัยลึกๆ เป็นคนขี้อ้อน ขี้หึงขี้หวงหน่อยๆ และชอบให้คนใกล้ตัวอยู่ด้วยตลอดเวลา แม้บางครั้งอาจจะคิดมากไปบ้าง แต่ถ้าได้รู้จักกันจริงๆ รับรองว่าอบอุ่นแน่นอนครับ!`,
+        next: "อยากให้ผมแนะนำส่วนไหนเพิ่มเติมอีกไหมครับ?"
+        },
+        "ทำอะไรอยู่?": { a: "กำลังนั่งปั่นโปรเจกต์กับฟังเพลงชิลๆ ครับ... สนใจทักมาแกล้งกันได้ที่ IG นะครับ" }
+    };
+
+    const choiceContainer = document.getElementById('chat-choices');
+    const msgDiv = document.getElementById('chat-messages');
+
+    function renderButtons(keys) {
+        choiceContainer.innerHTML = '';
+        keys.forEach(key => {
+            const btn = document.createElement('button');
+            btn.className = 'mini-btn';
+            btn.innerText = key;
+            btn.onclick = () => sendToChat(key);
+            choiceContainer.appendChild(btn);
+        });
+    }
+
+    renderButtons(Object.keys(chatData));
+
+    function sendToChat(choice) {
+        msgDiv.innerHTML += `<div style="margin-bottom:10px; color:#4f46e5;"><b>คุณ:</b> ${choice}</div>`;
+        let reply = "";
+        if (chatData[choice]) {
+            reply = chatData[choice].a;
+            if (chatData[choice].options) {
+                setTimeout(() => renderButtons(chatData[choice].options), 500);
+            } else {
+                setTimeout(() => renderButtons(Object.keys(chatData)), 1000);
+            }
+        } else if (choice === "IG") {
+            reply = "นี่เลยครับ IG นัท: <a href='https://www.instagram.com/_nuttsume/' target='_blank'>@_nuttsume_</a>";
+            setTimeout(() => renderButtons(Object.keys(chatData)), 1000);
+        } else if (choice === "Discord") {
+            reply = "ทักมาได้ที่ Discord นี้เลยครับ!: <a href='https://discord.gg/wAGZGyEjQH' target='_blank'>กดเข้า Discord ของนัตที่นี่</a>";
+            setTimeout(() => renderButtons(Object.keys(chatData)), 1000);
+        }
+        setTimeout(() => {
+            msgDiv.innerHTML += `<div style="margin-bottom:10px;"><b>AI:</b> ${reply}</div>`;
+            msgDiv.scrollTop = msgDiv.scrollHeight;
+        }, 300);
+    }
+
+    function convertYoutubeEmbed(url){
+        if(url.includes("/embed/")) return url;
+        let m=url.match(/youtu\.be\/([^?&]+)/)||url.match(/[?&]v=([^?&]+)/)||url.match(/embed\/([^?&]+)/);
+        return m?`https://www.youtube.com/embed/${m[1]}`:url;
+    }
+
+    let currentImgIndex = 0;
+    const imgElement = document.getElementById('profile-img');
+    imgElement.src = config.profileImages[0];
+    setInterval(() => {
+        currentImgIndex = (currentImgIndex + 1) % config.profileImages.length;
+        imgElement.src = config.profileImages[currentImgIndex];
+    }, 300000);
+
+    let isRow = false;
+    function toggleHobbyLayout() {
+        const list = document.getElementById('hobbies-list');
+        isRow = !isRow;
+        list.style.flexDirection = isRow ? 'row' : 'column';
+    }
+
+    document.getElementById('chat-toggle-btn').addEventListener('click', () => {
+        const win = document.getElementById('chat-window');
+        win.style.display = (win.style.display === 'flex') ? 'none' : 'flex';
+    });
+
+    const hour = new Date().getHours();
+    document.getElementById('greeting').innerText = 
+        (hour >= 5 && hour < 12)  ? "อรุณสวัสดิ์ครับ.. เช้านี้สดใสจังเลยนะ" : 
+        (hour >= 12 && hour < 17) ? "สวัสดีตอนบ่ายครับ.. ทำอะไรอยู่เอ่ย?" : 
+        (hour >= 17 && hour < 20) ? "เย็นแล้วนะครับ.. พักสายตาจากหน้าจอบ้างนะ" : 
+        (hour >= 20 && hour < 23) ? "ดึกแล้ว.. เหงาไหมครับ? ทักมาคุยกับนัตได้นะ" : "ดึกมากแล้ว.. Good Night นะครับ 🌙✨";
+    
+    config.socials.forEach(s => document.getElementById('socialLinks').innerHTML += `<a href="${s.url}" target="_blank" class="social-btn" style="color: ${s.color};"><i class="${s.iconClass}"></i></a>`);
+    config.hobbies.forEach(h => { if(h.show) document.getElementById('hobbies-list').innerHTML += `<div style="padding: 3px; color:#475569;">• ${h.name}</div>`; });
+    
+    document.getElementById('main-yt-player').src = convertYoutubeEmbed(config.musicList[0]);
+    config.musicList.forEach(url => document.getElementById('full-music-list').innerHTML += `<iframe class="youtube-frame" src="${convertYoutubeEmbed(url)}" loading="lazy" style="margin-bottom:18px;"></iframe>`);
+
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        const chatBtn = document.getElementById("chat-toggle-btn");
+        const chatWin = document.getElementById("chat-window");
+        chatBtn.style.display = (pageId === "home") ? "block" : "none";
+        chatWin.style.display = "none";
+    }
+</script>
+</body>
+</html>
