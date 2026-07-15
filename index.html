@@ -69,17 +69,94 @@
         #chat-window { display: none; position: fixed; bottom: 90px; right: 20px; width: 300px; max-width: 85%; height: 400px; background: white; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 9998; flex-direction: column; overflow: hidden; border: none; }
         .youtube-frame { width: 100%; aspect-ratio: 16/9; border: 0; border-radius: 20px; background: #000; }
     </style>
+
+<style>
+body{transition:background 1s;}
+#statsBox{
+    margin:15px auto;
+    background:rgba(30,30,30,.85);
+    padding:10px 18px;
+    border-radius:14px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:15px;
+    color:white;
+    font-family:'Kanit',sans-serif;
+    font-size:14px;
+    max-width:90%;
+    backdrop-filter:blur(10px);
+}
+
+.stat-item{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    white-space:nowrap;
+}
+
+.stat-item i{
+    font-size:18px;
+    color:#d1d5db;
+}
+
+.stat-line{
+    width:1px;
+    height:25px;
+    background:rgba(255,255,255,.25);
+}
+
+.online i{
+    color:#22c55e;
+}
+</style>
 </head>
 <body>
 
 <div class="container">
     <div id="home" class="page active">
-        <div><span class="status-dot"></span> Online - พร้อมดูแลคุณเสมอครับ</div>
+        <div style="text-align: center; margin-bottom: 10px;">
+    <span class="status-dot"></span> Online 
+    <span style="display: block; margin-top: 5px;">พร้อมดูแลคุณเสมอครับ</span>
+</div>
         <h3 id="greeting"></h3>
         
         <img id="profile-img" src="" class="profile-pic">
         <h1>NUTT</h1>
-        <p>IT Student | ดูแลคุณได้มากกว่าคอมพิวเตอร์</p>
+<p>ดูแลคุณได้มากกว่าคอมพิวเตอร์</p>
+
+<!-- แทนที่ statsBox เดิมด้วยอันนี้ -->
+<div id="status-message-box" style="
+    margin: 15px auto; 
+    background: rgba(255, 255, 255, 0.6); 
+    padding: 12px 20px; 
+    border-radius: 20px; 
+    color: #475569; 
+    font-family: 'Kanit', sans-serif; 
+    font-size: 0.9rem; 
+    max-width: 90%; 
+    backdrop-filter: blur(10px); 
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    animation: pulse-soft 3s infinite ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+">
+    <i class="fas fa-code" style="color: #4f46e5; font-size: 1rem;"></i>
+    <span id="dynamic-message" style="font-weight: 500;"></span>
+</div>
+
+<style>
+#dynamic-message::after {
+        content: '|';
+        animation: blink 1s infinite;
+        margin-left: 2px;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+</style>
+
 
         <div class="social-container" id="socialLinks"></div>
 
@@ -122,7 +199,8 @@
     const config = {
         profileImages: [
             "https://media.discordapp.net/attachments/1515884744733233314/1525805020291793036/31132288733f70e7c05d10bc3a104f59.gif?ex=6a54b828&is=6a5366a8&hm=9438ef5af8140071980ff590eef282cbdcfe822ba13542f1e89a61d0914223e3&=",
-            "https://media.discordapp.net/attachments/1515884744733233314/1525804851567525938/300664275_439943731488554_4247432938376776043_n.jpg?ex=6a54b800&is=6a536680&hm=dd32079b2a62596c3cdc1685fd0f76e5ca162bf6d0220d8dee7230d72f0a5771&=&format=webp&width=783&height=779"
+            "https://media.discordapp.net/attachments/1515884744733233314/1525804851567525938/300664275_439943731488554_4247432938376776043_n.jpg?ex=6a54b800&is=6a536680&hm=dd32079b2a62596c3cdc1685fd0f76e5ca162bf6d0220d8dee7230d72f0a5771&=&format=webp&width=783&height=779",
+            "https://media.discordapp.net/attachments/1515884744733233314/1525805020291793036/31132288733f70e7c05d10bc3a104f59.gif?ex=6a54b828&is=6a5366a8&hm=9438ef5af8140071980ff590eef282cbdcfe822ba13542f1e89a61d0914223e3&="
         ],
         hobbies: [
             { name: "ดูอนิเมะ", show: true },
@@ -277,13 +355,6 @@
         const win = document.getElementById('chat-window');
         win.style.display = (win.style.display === 'flex') ? 'none' : 'flex';
     });
-
-    const hour = new Date().getHours();
-    document.getElementById('greeting').innerText = 
-        (hour >= 5 && hour < 12)  ? "อรุณสวัสดิ์ครับ.. เช้านี้สดใสจังเลยนะ" : 
-        (hour >= 12 && hour < 17) ? "สวัสดีตอนบ่ายครับ.. ทำอะไรอยู่เอ่ย?" : 
-        (hour >= 17 && hour < 20) ? "เย็นแล้วนะครับ.. พักสายตาจากหน้าจอบ้างนะ" : 
-        (hour >= 20 && hour < 23) ? "ดึกแล้ว.. เหงาไหมครับ? ทักมาคุยกับนัตได้นะ" : "ดึกมากแล้ว.. Good Night นะครับ 🌙✨";
     
     config.socials.forEach(s => document.getElementById('socialLinks').innerHTML += `<a href="${s.url}" target="_blank" class="social-btn" style="color: ${s.color};"><i class="${s.iconClass}"></i></a>`);
     config.hobbies.forEach(h => { if(h.show) document.getElementById('hobbies-list').innerHTML += `<div style="padding: 3px; color:#475569;">• ${h.name}</div>`; });
@@ -299,6 +370,40 @@
         chatBtn.style.display = (pageId === "home") ? "block" : "none";
         chatWin.style.display = "none";
     }
+</script>
+
+
+<script>
+(function(){
+    const h = new Date().getHours();
+    const b = document.body;
+    const msgEl = document.getElementById('dynamic-message');
+    
+    // ตั้งค่าพื้นหลัง
+    if(h<5||h>=19) b.style.background="linear-gradient(135deg,#0f172a,#312e81)";
+    else if(h<11) b.style.background="linear-gradient(135deg,#87ceeb,#fff7b2)";
+    else if(h<17) b.style.background="linear-gradient(135deg,#7dd3fc,#ffffff)";
+    else b.style.background="linear-gradient(135deg,#fb923c,#c084fc)";
+
+    // ข้อความต้อนรับตามช่วงเวลา (แก้ไขตรงนี้ให้ครบถ้วน)
+    const greetingText = 
+        (h >= 5 && h < 12)  ? "อรุณสวัสดิ์ครับ.. เช้านี้สดใสจังเลยนะ" : 
+        (h >= 12 && h < 17) ? "สวัสดีตอนบ่ายครับ.. ทำอะไรอยู่เอ่ย?" : 
+        (h >= 17 && h < 20) ? "เย็นแล้วนะครับ.. พักสายตาจากหน้าจอบ้างนะ" : 
+        (h >= 20 && h < 23) ? "ดึกแล้ว.. เหงาไหมครับ? ทักมาคุยกับนัตได้นะ" : 
+        "ดึกมากแล้ว.. Good Night นะครับ 🌙✨";
+    
+    // เอฟเฟกต์พิมพ์ดีด
+    let i = 0;
+    function type() {
+        if (i < greetingText.length) {
+            msgEl.innerText += greetingText.charAt(i);
+            i++;
+            setTimeout(type, 100);
+        }
+    }
+    type();
+})();
 </script>
 </body>
 </html>
