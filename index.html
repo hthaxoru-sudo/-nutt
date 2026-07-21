@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NUTT's Portfolio | GT-R R32 Edition</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700&family=Orbitron:wght@700;900&display=swap');
+
+        :root { 
+            --accent-color: #ef4444; 
+            --accent-glow: rgba(239, 68, 68, 0.4);
+            --text-main: #f1f5f9;
+        }
+        
+        body { 
+            font-family: 'Kanit', sans-serif; 
+            background: linear-gradient(rgba(11, 15, 25, 0.45), rgba(11, 15, 25, 0.7)), 
+                        url('https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=1200&auto=format&fit=crop&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-main);
+            margin: 0; 
+            padding: 15px; 
+            display: flex; 
+            justify-content: center; 
+            min-height: 100vh;
+        }
+        
+        .container { 
+            width: 100%; 
+            max-width: 450px; 
+            background: rgba(18, 24, 38, 0.35); 
+            backdrop-filter: blur(8px); 
+            -webkit-backdrop-filter: blur(8px);
+            padding: 25px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.2); 
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #1e293b, var(--accent-color), #1e293b);
+        }
+
+        @keyframes breathing { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
+        
+        .profile-pic { 
+            width: 140px; 
+            height: 140px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            border: 3px solid var(--accent-color); 
+            box-shadow: 0 0 20px var(--accent-glow);
+            margin: 15px 0; 
+            animation: breathing 4s ease-in-out infinite;
+        }
+
+        h1 { 
+            margin: 10px 0 5px; 
+            font-size: 2rem; 
+            color: #ffffff; 
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+        }
+        p { color: #cbd5e1; font-size: 0.95rem; margin-bottom: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.6); }
+
+        .page { display: none; } 
+        .active { display: block; }
+        
+        .btn { padding: 12px 20px; cursor: pointer; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); background: rgba(239, 68, 68, 0.75); color: white; margin: 10px 0; width: 100%; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 15px var(--accent-glow); font-family: 'Kanit', sans-serif; backdrop-filter: blur(5px); }
+        .btn:hover { transform: translateY(-3px); background: #dc2626; box-shadow: 0 6px 20px rgba(239, 68, 68, 0.8); }
+        
+        .mini-btn { font-size: 13px; padding: 6px 14px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 8px; cursor: pointer; margin-top: 10px; color: #cbd5e1; transition: 0.3s; font-family: 'Kanit', sans-serif; backdrop-filter: blur(5px); }
+        .mini-btn:hover { background: var(--accent-color); color: white; border-color: var(--accent-color); }
+        
+        .social-container { display: flex; justify-content: center; gap: 20px; margin: 20px 0; flex-wrap: wrap; }
+        .social-btn { 
+            font-size: 22px; 
+            width: 45px; height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            transition: 0.3s; 
+            backdrop-filter: blur(5px);
+        }
+        .social-btn:hover { transform: translateY(-3px) scale(1.1); background: var(--accent-color); color: #fff !important; border-color: var(--accent-color); box-shadow: 0 0 15px var(--accent-glow); }
+        
+        .status-dot { height: 10px; width: 10px; background-color: #22c55e; border-radius: 50%; display: inline-block; margin-right: 5px; box-shadow: 0 0 8px #22c55e; }
+        #greeting { font-weight: bold; color: #ff6b6b; margin-bottom: 5px; font-size: 1.1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.6); }
+
+        /* ปุ่มควบคุมเสียงเพลงลอยมุมขวาบนของหน้าเว็บ */
+        #music-floating-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            background: rgba(18, 24, 38, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            transition: 0.3s;
+            font-family: 'Kanit', sans-serif;
+        }
+        #music-floating-btn:hover {
+            background: rgba(239, 68, 68, 0.4);
+            border-color: var(--accent-color);
+        }
+
+        #chat-window { display: none; position: fixed; bottom: 90px; right: 20px; width: 300px; max-width: 85%; height: 400px; background: rgba(18, 24, 38, 0.65); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); z-index: 9998; flex-direction: column; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.2); }
+    </style>
+
+<style>
+.music-grid-btn {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    color: #f1f5f9;
+    transition: all 0.3s ease;
+    text-align: left;
+    width: 100%;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.music-grid-btn:hover {
+    background: rgba(239, 68, 68, 0.25);
+    border-color: var(--accent-color);
+    transform: translateX(4px);
+    box-shadow: 0 0 15px var(--accent-glow);
+}
+
+.music-grid-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(239, 68, 68, 0.3);
+    border: 1px solid var(--accent-color);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-color);
+    font-size: 18px;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.music-grid-info {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.music-grid-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.music-grid-subtitle {
+    font-size: 0.75rem;
+    color: #cbd5e1;
+}
+
+/* สไตล์กล่องเนื้อหาเพิ่มเติมในหน้าหลัก */
+.section-box {
+    margin: 20px 0; 
+    background: rgba(18, 24, 38, 0.35); 
+    backdrop-filter: blur(6px); 
+    padding: 15px; 
+    border-radius: 16px; 
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* สไตล์สำหรับหน้าแต่งรถ/งานอดิเรก */
+.car-card {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 15px;
+    margin-bottom: 15px;
+    text-align: left;
+}
+.car-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 10px;
+}
+</style>
+</head>
+<body>
+
+<!-- จุดใส่ลิงก์เพลง: ให้เปลี่ยนลิงก์ใน src ตรงนี้เป็นไฟล์เพลงของคุณ (.mp3 หรือลิงก์ไฟล์เสียง) -->
+<audio id="r32-audio" loop preload="auto">
+    <source src="ใส่ลิงก์เพลงของคุณตรงนี้.mp3" type="audio/mpeg">
+</audio>
+
+<!-- ปุ่มควบคุมเสียงเพลงลอยมุมขวาบน -->
+<button id="music-floating-btn" onclick="toggleR32Sound()">
+    <i class="fas fa-volume-up" id="audio-icon"></i> <span id="audio-btn-text">ปิดเสียงเพลง</span>
+</button>
+
+<div class="container">
+    <!-- หน้าหลัก -->
+    <div id="home" class="page active">
+        <div style="text-align: center; margin-bottom: 10px; background: rgba(239, 68, 68, 0.2); backdrop-filter: blur(5px); padding: 6px; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.4);">
+            <span class="status-dot"></span> <span style="font-family:'Orbitron'; font-size:0.85rem; letter-spacing:1px; color:#ef4444;">Online</span> 
+            <span style="display: block; margin-top: 2px; font-size:0.85rem; color:#cbd5e1;">พร้อมดูแลคุณเสมอครับ</span>
+        </div>
+        <h3 id="greeting"></h3>
+        
+        <img id="profile-img" src="" class="profile-pic">
+        <h1 style="font-family: 'Orbitron', sans-serif;">NUTT</h1>
+        <p>ดูแลคุณได้มากกว่าคอมพิวเตอร์</p>
+
+        <div id="status-message-box" style="
+            margin: 15px auto; 
+            background: rgba(18, 24, 38, 0.35); 
+            backdrop-filter: blur(6px);
+            padding: 12px 20px; 
+            border-radius: 12px; 
+            color: #cbd5e1; 
+            font-family: 'Kanit', sans-serif; 
+            font-size: 0.9rem; 
+            max-width: 90%; 
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        ">
+            <i class="fas fa-gauge-high" style="color: #ef4444; font-size: 1rem;"></i>
+            <span id="dynamic-message" style="font-weight: 500;"></span>
+        </div>
+
+        <style>
+        #dynamic-message::after {
+                content: '|';
+                animation: blink 1s infinite;
+                margin-left: 2px;
+                color: #ef4444;
+            }
+            @keyframes blink { 50% { opacity: 0; } }
+        </style>
+
+        <div class="social-container" id="socialLinks"></div>
+
+        <!-- โซนแนวเพลงที่ชอบ -->
+        <div class="section-box" id="music-section-box">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                <span style="font-family: 'Orbitron'; font-size: 0.85rem; color: #ef4444; letter-spacing: 1px;"><i class="fas fa-music"></i> แนวเพลงที่ชอบ</span>
+                <span style="font-size: 0.75rem; color: #cbd5e1;">(Music & Vibe)</span>
+            </div>
+            
+            <div id="featured-music-btn-container"></div>
+
+            <button class="mini-btn" style="width: 100%; margin-top: 5px;" onclick="showPage('music')"><i class="fas fa-list"></i> ดูเพลย์ลิสต์เพลงทั้งหมด >></button>
+        </div>
+
+        <!-- โซนสไตล์รถและงานอดิเรก -->
+        <div class="section-box" id="album-section-box">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                <span style="font-family: 'Orbitron'; font-size: 0.85rem; color: #ef4444; letter-spacing: 1px;"><i class="fas fa-car-side"></i> รถคู่ใจ & งานอดิเรก</span>
+                <span style="font-size: 0.75rem; color: #cbd5e1;">Online</span>
+            </div>
+            
+            <button class="music-grid-btn" style="margin-bottom: 0;" onclick="showPage('car-garage')">
+                <div class="music-grid-icon"><i class="fas fa-images"></i></div>
+                <div class="music-grid-info">
+                    <div class="music-grid-title">อัลบั้มและงานอดิเรก</div>
+                    <div class="music-grid-subtitle">คลิกเพื่อดูรูปภาพและรายละเอียดทั้งหมด</div>
+                </div>
+                <i class="fas fa-chevron-right" style="color: #cbd5e1; font-size: 12px; margin-left: 10px;"></i>
+            </button>
+        </div>
+
+        <div id="hobbies-container" style="margin: 20px 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h4 style="color:#cbd5e1; margin:0; font-family:'Orbitron'; font-size:0.85rem;">𝚂𝙿𝙰𝚁𝙴 𝚃𝙸𝙼𝙴</h4>
+                <button class="mini-btn" onclick="toggleHobbyLayout()">สลับโหมด</button>
+            </div>
+            <div id="hobbies-list" style="display: flex; flex-direction: column; gap: 5px; align-items: center;"></div>
+        </div>
+    </div>
+
+    <!-- หน้าที่ 2: เพลย์ลิสต์เพลง -->
+    <div id="music" class="page">
+        <button class="btn" style="background:rgba(30, 41, 59, 0.5); margin-bottom: 20px; border:1px solid rgba(255,255,255,0.2);" onclick="showPage('home')">
+            <i class="fas fa-arrow-left"></i> กลับหน้าหลัก
+        </button>
+        
+        <h2 style="font-family: 'Orbitron'; font-size: 1.4rem; color: #ef4444; letter-spacing: 1px; margin-bottom: 15px;">MUSIC & VIBES</h2>
+        <div id="full-music-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
+    </div>
+
+    <!-- หน้าที่ 3: ข้อมูลรถ R32 และงานอดิเรกเพิ่มเติม -->
+    <div id="car-garage" class="page">
+        <button class="btn" style="background:rgba(30, 41, 59, 0.5); margin-bottom: 20px; border:1px solid rgba(255,255,255,0.2);" onclick="showPage('home')">
+            <i class="fas fa-arrow-left"></i> กลับหน้าหลัก
+        </button>
+        
+        <h2 style="font-family: 'Orbitron'; font-size: 1.3rem; color: #ef4444; letter-spacing: 1px; margin-bottom: 15px;">GT-R R32 & HOBBIES GARAGE</h2>
+        
+        <div class="car-card">
+            <img src="https://cdn.discordapp.com/attachments/1515884651011506328/1529098130598006795/NISSAN_R32_SKYLINE.jpg?ex=6a60b31b&is=6a5f619b&hm=aef4d7d5cdae6b4da383d1246aae06100fce7097e70e5a32dc648b17c52a6b36&" class="car-image" alt="Nissan Skyline GT-R R32">
+            <h3 style="font-family: 'Orbitron'; color: #fff; margin: 5px 0; font-size: 1.1rem;">Nissan Skyline GT-R (BNR32)</h3>
+            <p style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 10px;">รถในฝันสุดคลาสสิก ขับเคลื่อน 4 ล้อ ATTESA E-TS พร้อมเครื่องยนต์ตำนาน RB26DETT Twin-Turbo เสียงท่อคำรามดุดัน เร้าใจทุกย่านความเร็ว</p>
+            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #ef4444; font-family: 'Orbitron';">
+                <span>ENGINE: RB26DETT</span>
+                <span>TWIN TURBO</span>
+            </div>
+        </div>
+
+        <div class="car-card">
+            <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&auto=format&fit=crop&q=80" class="car-image" alt="JDM Lifestyle">
+            <h3 style="font-family: 'Orbitron'; color: #fff; margin: 5px 0; font-size: 1.1rem;">JDM Culture & Photography</h3>
+            <p style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 0;">งานอดิเรกสุดโปรดคือการออกไปถ่ายภาพรถแต่ง JDM และเก็บบรรยากาศยามค่ำคืนตามเส้นทาง Wangan พร้อมฟังเพลงแนว Synthwave / Phonk ชิล ๆ</p>
+        </div>
+    </div>
+</div>
+
+<!-- ปุ่มแชต AI อยู่ที่มุมขวาล่างตามตำแหน่งเดิม -->
+<button id="chat-toggle-btn" style="position:fixed; bottom:20px; right:20px; z-index:9999; width:60px; height:60px; border-radius:50%; background:var(--accent-color); color:white; border:none; cursor:pointer; box-shadow:0 4px 20px rgba(239, 68, 68, 0.6); backdrop-filter: blur(5px);">
+    <i class="fas fa-comment-dots" style="font-size:24px;"></i>
+</button>
+
+<div id="chat-window">
+    <div style="background:rgba(239, 68, 68, 0.85); backdrop-filter: blur(5px); color:white; padding:15px; text-align:center; font-weight:bold; font-family:'Orbitron'; font-size:0.9rem; letter-spacing:1px;">แชทกับ ตัวแทน นัต</div>
+    <div id="chat-messages" style="flex:1; padding:15px; overflow-y:auto; font-size:14px; color:#cbd5e1; text-align:left;">
+        <div style="margin-bottom:10px;">โย่! มีอะไรอยากถามนัตมั้ย? จิ้มเลือกคำถามด้านล่างได้เลยนะ!</div>
+    </div>
+    <div id="chat-choices" style="padding:10px; display:flex; flex-wrap:wrap; gap:5px; border-top:1px solid rgba(255,255,255,0.2); justify-content:center;"></div>
+</div>
+
+<script>
+    const config = {
+        // ส่วนควบคุมการเปิด-ปิด (true = เปิดแสดงผล, false = ปิดซ่อน)
+        showMusicSection: true, // ตั้งค่าเปิด/ปิด หมวดหมู่เพลงที่ชอบ
+        showAlbumSection: false, // ตั้งค่าเปิด/ปิด หมวดหมู่อัลบั้ม (รถ/งานอดิเรก)
+
+        profileImages: [
+            "https://media.discordapp.net/attachments/1515884744733233314/1525805020291793036/31132288733f70e7c05d10bc3a104f59.gif?ex=6a6095a8&is=6a5f4428&hm=0a8924e8aaa531be814ab7354050b21b19abcde76d9eaaf4326a181f442181ed&=",
+            "https://media.discordapp.net/attachments/1515884744733233314/1525804621346635826/Screenshot_2025-11-21_222300.png?ex=6a609549&is=6a5f43c9&hm=7f48222372b40e0e015f1f648f34d53bff0938e508570a7455cbb43fb75775bd&=&format=webp&quality=lossless"
+        ],
+        hobbies: [
+            { name: "ดูอนิเมะ", show: true },
+            { name: "เล่นเกม", show: true },
+            { name: "ถ่ายรูป", show: true },
+            { name: "ดู YouTube", show: true },
+            { name: "ดู IG", show: true },
+            { name: "อยู่ในดิสคอร์ด", show: true }
+        ],
+        musicList: [
+            "https://www.youtube.com/embed/DJq0jJhPSjg",
+            "https://youtu.be/F98j9IcSfdc?si=lGy0IY8oSH7DDkjf",
+            "https://youtu.be/ssKJYCw7Z7c?si=7Ug40irR2cIeiVkA",
+            "https://www.youtube.com/watch?v=Ik228UkBp6w&list=RDIk228UkBp6w&start_radio=1",
+            "https://www.youtube.com/watch?v=k7qg9Q0w_m0&list=RDk7qg9Q0w_m0&start_radio=1",
+            "https://www.youtube.com/watch?v=dfPJoRI7JVE",
+            "https://www.youtube.com/watch?v=ebxzxo_q89Y&list=RDk7qg9Q0w_m0&index=5"
+        ],
+        socials: [
+            { url: "https://discord.gg/wAGZGyEjQH", iconClass: "fab fa-discord", color: "#5865F2" },
+            { url: "https://www.instagram.com/_nuttsume/", iconClass: "fab fa-instagram", color: "#E1306C" },
+            { url: "https://open.spotify.com/user/317tsqx2bfvb34z2xcw7jouksxua", iconClass: "fab fa-spotify", color: "#1DB954" },
+            { url: "https://www.tiktok.com/@nuttsume_chan", iconClass: "fab fa-tiktok", color: "#ffffff" }
+        ],
+        webhookUrl: "https://discord.com/api/webhooks/1525852496080404510/wTRd5yaktwBNbXgVbSUTegOO1IrswczuOMrnfx8N5FmkJQstyti7RUPsjgckOelpD7gU"
+    };
+
+    const chatData = {
+        "แนะนำตัวหน่อย?": {
+            a: `<b>สวัสดีครับ ผมขอแนะนำตัวนะครับ!</b><br><br>
+                • <b>ชื่อเล่น:</b> นัต<br>
+                • <b>อายุ:</b> 22 ปี<br>
+                • <b>ส่วนสูง:</b> 173 ซม.<br>
+                • <b>สถานะการศึกษา:</b> IT Student 💻<br>
+                • <b>สถานะหัวใจ:</b> โสด 1000%<br>
+                • <b>รูปร่าง:</b> หุ่นหมี 🐻<br><br>
+                <b>นิสัยส่วนตัว:</b><br>
+                เป็นคนคุยไม่เก่งเท่าไหร่ แต่ถ้าได้ลองเปิดใจจะรู้ว่าเป็นคนรักจริงนะครับ! ปกตินัตเป็นคนติดเล่นและขี้แกล้งสุด ๆ แต่ถ้าถึงเวลาต้องจริงจัง นัตก็โฟกัสเต็มที่ ส่วนนิสัยลึก ๆ เป็นคนขี้อ้อน ขี้หึงขี้หวงนิดหน่อย และชอบใช้เวลากับคนที่สนิทครับ 😊`
+        },
+        "ทำอะไรอยู่?": {
+            a: "ช่วงนี้กำลังนั่งปั่นโปรเจกต์กับฟังเพลงชิล ๆ ครับ 😆 แต่ถ้ามีคนทักมา นัตก็ตอบเรื่อย ๆ นะ"
+        },
+        "ช่องทางติดต่อ": {
+            a: "เลือกช่องทางที่สะดวกได้เลยครับ 😊",
+            options: ["IG", "Discord"]
+        },
+        "โสดไหม?": {
+            a: "โสดครับ 😆 ถ้าอยากรู้จักกันมากขึ้น ลองคุยกันก่อนได้นะ"
+        }
+    };
+
+    function toggleR32Sound() {
+        const audio = document.getElementById('r32-audio');
+        const icon = document.getElementById('audio-icon');
+        const btnText = document.getElementById('audio-btn-text');
+
+        if (audio.paused) {
+            audio.play().then(() => {
+                icon.className = "fas fa-volume-up";
+                btnText.innerText = "ปิดเสียงเพลง";
+            }).catch(e => {
+                console.log("Audio play blocked:", e);
+            });
+        } else {
+            audio.pause();
+            icon.className = "fas fa-volume-mute";
+            btnText.innerText = "เปิดเสียงเพลง";
+        }
+    }
+
+    // สั่งเล่นเพลงอัตโนมัติทันทีที่เข้าเว็บ
+    window.addEventListener('DOMContentLoaded', () => {
+        const audio = document.getElementById('r32-audio');
+        const icon = document.getElementById('audio-icon');
+        const btnText = document.getElementById('audio-btn-text');
+
+        audio.play().then(() => {
+            icon.className = "fas fa-volume-up";
+            btnText.innerText = "ปิดเสียงเพลง";
+        }).catch(error => {
+            // หากเบราว์เซอร์บล็อกการเล่นอัตโนมัติ จะตั้งค่าเริ่มต้นให้ปุ่มกดเปิดเพลงได้ง่าย
+            icon.className = "fas fa-volume-mute";
+            btnText.innerText = "เปิดเสียงเพลง";
+        });
+    });
+
+    function sendToDiscord(userMessage, botReply) {
+        const ua = navigator.userAgent;
+        const screenRes = `${window.screen.width} x ${window.screen.height}`;
+        const language = navigator.language;
+        const platform = navigator.platform;
+        const browser = (ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [])[0] || "Unknown Browser";
+
+        fetch(config.webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                embeds: [{
+                    title: "💬 มีข้อความใหม่จากเว็บไซต์",
+                    color: 15601458,
+                    fields: [
+                        { name: "👤 คำถามจากผู้ใช้", value: `>>> ${userMessage}`, inline: false },
+                        { name: "🤖 นัต (AI) ตอบกลับ", value: `>>> ${botReply.replace(/<[^>]*>?/gm, '')}`, inline: false },
+                        { name: "💻 ข้อมูลอุปกรณ์และสเปค", value: `**ระบบปฏิบัติการ:** ${platform}\n**เบราว์เซอร์:** ${browser}\n**ความละเอียดจอ:** ${screenRes}\n**ภาษาที่ใช้:** ${language}`, inline: false }
+                    ],
+                    footer: { text: "ระบบแจ้งเตือนอัตโนมัติ • R32 Portfolio" },
+                    timestamp: new Date()
+                }]
+            })
+        }).catch(err => console.error("Discord Error:", err));
+    }
+
+    const choiceContainer = document.getElementById('chat-choices');
+    const msgDiv = document.getElementById('chat-messages');
+
+    function renderButtons(keys) {
+        choiceContainer.innerHTML = '';
+        keys.forEach(key => {
+            const btn = document.createElement('button');
+            btn.className = 'mini-btn';
+            btn.innerText = key;
+            btn.onclick = () => sendToChat(key);
+            choiceContainer.appendChild(btn);
+        });
+    }
+
+    renderButtons(Object.keys(chatData));
+
+    function sendToChat(choice) {
+        msgDiv.innerHTML += `<div style="margin-bottom:10px; color:#ef4444;"><b>คุณ:</b> ${choice}</div>`;
+        let reply = "";
+        if (chatData[choice]) {
+            reply = chatData[choice].a;
+            if (chatData[choice].options) {
+                setTimeout(() => renderButtons(chatData[choice].options), 500);
+            } else {
+                setTimeout(() => renderButtons(Object.keys(chatData)), 1000);
+            }
+        } else if (choice === "IG") {
+            reply = "นี่เลยครับ IG นัท: <a href='https://www.instagram.com/_nuttsume/' target='_blank' style='color:#ef4444;'>@_nuttsume_</a>";
+            setTimeout(() => renderButtons(Object.keys(chatData)), 1000);
+        } else if (choice === "Discord") {
+            reply = "ทักมาได้ที่ Discord นี้เลยครับ!: <a href='https://discord.gg/wAGZGyEjQH' target='_blank' style='color:#ef4444;'>กดเข้า Discord ของนัตที่นี่</a>";
+            setTimeout(() => renderButtons(Object.keys(chatData)), 1000);
+        }
+        setTimeout(() => {
+            msgDiv.innerHTML += `<div style="margin-bottom:10px;"><b>AI:</b> ${reply}</div>`;
+            msgDiv.scrollTop = msgDiv.scrollHeight;
+            sendToDiscord(choice, reply);
+        }, 300);
+    }
+
+    let currentImgIndex = 0;
+    const imgElement = document.getElementById('profile-img');
+    if (config.profileImages && config.profileImages.length > 0) {
+        imgElement.src = config.profileImages[0];
+    }
+    imgElement.onerror = function() {
+        this.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3";
+    };
+
+    let isRow = false;
+    function toggleHobbyLayout() {
+        const list = document.getElementById('hobbies-list');
+        isRow = !isRow;
+        list.style.flexDirection = isRow ? 'row' : 'column';
+    }
+
+    document.getElementById('chat-toggle-btn').addEventListener('click', () => {
+        const win = document.getElementById('chat-window');
+        win.style.display = (win.style.display === 'flex') ? 'none' : 'flex';
+    });
+    
+    config.socials.forEach(s => document.getElementById('socialLinks').innerHTML += `<a href="${s.url}" target="_blank" class="social-btn" style="color: ${s.color};"><i class="${s.iconClass}"></i></a>`);
+    config.hobbies.forEach(h => { if(h.show) document.getElementById('hobbies-list').innerHTML += `<div style="padding: 4px 10px; background:rgba(255,255,255,0.08); backdrop-filter:blur(5px); border-radius:8px; border:1px solid rgba(255,255,255,0.15); color:#cbd5e1; font-size:0.9rem;">• ${h.name}</div>`; });
+    
+    // ควบคุมการแสดงผลหรือซ่อนหมวดหมู่เพลงผ่านตัวแปร config ในโค้ด
+    if (config.showMusicSection) {
+        const firstMusic = config.musicList[0];
+        const embedUrl1 = typeof firstMusic === 'object' ? firstMusic.url : firstMusic;
+        const title1 = typeof firstMusic === 'object' ? firstMusic.title : "Night Runner Track";
+        document.getElementById('featured-music-btn-container').innerHTML = `
+            <a href="${embedUrl1}" target="_blank" class="music-grid-btn" style="margin-bottom:0;">
+                <div class="music-grid-icon"><i class="fas fa-play"></i></div>
+                <div class="music-grid-info">
+                    <div class="music-grid-title">${title1}</div>
+                    <div class="music-grid-subtitle">คลิกเพื่อฟังบน YouTube</div>
+                </div>
+                <i class="fas fa-external-link-alt" style="color: #cbd5e1; font-size: 14px; margin-left: 10px;"></i>
+            </a>
+        `;
+
+        const fullMusicContainer = document.getElementById('full-music-list');
+        config.musicList.forEach((music, index) => {
+            const url = typeof music === 'object' ? music.url : music;
+            const title = typeof music === 'object' ? music.title : `Playlist Track 0${index + 1}`;
+            fullMusicContainer.innerHTML += `
+                <a href="${url}" target="_blank" class="music-grid-btn">
+                    <div class="music-grid-icon"><i class="fas fa-music"></i></div>
+                    <div class="music-grid-info">
+                        <div class="music-grid-title">${title}</div>
+                        <div class="music-grid-subtitle">Track #${index + 1} • กดเพื่อเปิดฟังเพลง</div>
+                    </div>
+                    <i class="fas fa-play" style="color: var(--accent-color); font-size: 12px; margin-left: 10px;"></i>
+                </a>
+            `;
+        });
+    } else {
+        document.getElementById('music-section-box').style.display = 'none';
+    }
+
+    // ควบคุมการแสดงผลหรือซ่อนหมวดหมู่อัลบั้มผ่านตัวแปร config ในโค้ด
+    if (!config.showAlbumSection) {
+        document.getElementById('album-section-box').style.display = 'none';
+    }
+
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        const chatBtn = document.getElementById("chat-toggle-btn");
+        const chatWin = document.getElementById("chat-window");
+        chatBtn.style.display = (pageId === "home") ? "block" : "none";
+        chatWin.style.display = "none";
+    }
+
+    (function(){
+        const h = new Date().getHours();
+        const msgEl = document.getElementById('dynamic-message');
+    const greetingText = 
+        (h >= 5 && h < 12)  ? "อรุณสวัสดิ์ครับ.. เช้านี้สดใสจังเลยนะ" : 
+        (h >= 12 && h < 17) ? "สวัสดีตอนบ่ายครับ.. ทำอะไรอยู่เอ่ย?" : 
+        (h >= 17 && h < 20) ? "เย็นแล้วนะครับ.. พักสายตาจากหน้าจอบ้างนะ" : 
+        (h >= 20 && h < 23) ? "ดึกแล้ว.. เหงาไหมครับ? ทักมาคุยกับนัตได้นะ" : 
+        "ดึกมากแล้ว.. Good Night นะครับ 🌙✨";
+        
+        let i = 0;
+        function type() {
+            if (i < greetingText.length) {
+                msgEl.innerText += greetingText.charAt(i);
+                i++;
+                setTimeout(type, 100);
+            }
+        }
+        type();
+    })();
+</script>
+</body>
+</html>
