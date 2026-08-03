@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แบบทดสอบทำความรู้จักกัน</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky-deep:#2c2650;
+    --sky-mid:#4a3f7a;
+    --lav-soft:#f4efff;
+    --card:#fffaf3;
+    --blush:#f6a8b8;
+    --gold:#f3c877;
+    --text-dark:#352d52;
+    --text-mute:#7a7196;
+    --ok:#8fc9a9;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Nunito', sans-serif;
+    background: radial-gradient(ellipse at top, var(--sky-mid) 0%, var(--sky-deep) 55%, #1c1836 100%);
+    min-height:100vh;
+    color:var(--text-dark);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    position:relative;
+    overflow-x:hidden;
+  }
+  /* twinkling stars */
+  .stars{position:fixed; inset:0; z-index:0; pointer-events:none;}
+  .star{
+    position:absolute; background:#fff; border-radius:50%;
+    animation: twinkle 3.5s ease-in-out infinite;
+    opacity:.6;
+  }
+  @keyframes twinkle{
+    0%,100%{opacity:.15; transform:scale(.8);}
+    50%{opacity:.9; transform:scale(1.15);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .star{animation:none; opacity:.4;}
+  }
+
+  .wrap{
+    position:relative; z-index:1;
+    width:100%; max-width:560px;
+  }
+
+  .card{
+    background:var(--card);
+    border-radius:28px;
+    box-shadow:0 30px 60px rgba(20,10,50,.35), 0 2px 0 rgba(255,255,255,.6) inset;
+    padding:40px 32px 32px;
+    position:relative;
+    overflow:hidden;
+  }
+  .card::before{
+    content:"";
+    position:absolute; top:-60px; right:-60px;
+    width:160px; height:160px; border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, var(--gold), #f7dca3 60%, transparent 70%);
+    opacity:.5;
+  }
+
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:1.7rem;
+    line-height:1.35;
+    color:var(--text-dark);
+    margin-bottom:12px;
+    position:relative;
+  }
+  p.lead{
+    color:var(--text-mute);
+    font-size:.98rem;
+    line-height:1.7;
+    margin-bottom:8px;
+    position:relative;
+    white-space:pre-line;
+  }
+  .hint{
+    display:inline-block;
+    margin-top:14px;
+    font-size:.85rem;
+    color:var(--blush);
+    font-weight:700;
+    background:#fff0f3;
+    padding:6px 14px;
+    border-radius:999px;
+  }
+
+  /* moon phase progress */
+  .moon-track{
+    display:flex; gap:8px; justify-content:center;
+    margin:28px 0 8px;
+  }
+  .moon-dot{
+    width:16px; height:16px; border-radius:50%;
+    background:#e7e1f5;
+    position:relative;
+    transition:background .4s ease, transform .3s ease;
+  }
+  .moon-dot.filled{
+    background:radial-gradient(circle at 35% 35%, #fff, var(--gold) 70%);
+    box-shadow:0 0 10px rgba(243,200,119,.8);
+    transform:scale(1.15);
+  }
+  .moon-dot.current{
+    outline:2px solid var(--blush);
+    outline-offset:2px;
+  }
+  .progress-label{
+    text-align:center; font-size:.8rem; color:var(--text-mute); margin-bottom:22px;
+  }
+
+  .step{ display:none; animation:fadeIn .35s ease; }
+  .step.active{ display:block; }
+  @keyframes fadeIn{
+    from{opacity:0; transform:translateY(6px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  .q-title{
+    font-family:'Fraunces', serif;
+    font-size:1.25rem;
+    font-weight:600;
+    margin-bottom:18px;
+    line-height:1.5;
+  }
+
+  .options{ display:flex; flex-direction:column; gap:10px; margin-bottom:6px; }
+  .opt{
+    display:flex; align-items:center; gap:10px;
+    border:2px solid #ece5fb;
+    background:#fdfbff;
+    border-radius:16px;
+    padding:13px 16px;
+    cursor:pointer;
+    transition:.2s ease;
+    font-size:.97rem;
+  }
+  .opt:hover{ border-color:var(--blush); background:#fff5f7; }
+  .opt.selected{
+    border-color:var(--blush);
+    background:linear-gradient(135deg,#fff0f3,#fff8ec);
+    box-shadow:0 4px 12px rgba(246,168,184,.25);
+  }
+  .opt input{ accent-color: var(--blush); width:18px; height:18px; flex-shrink:0; }
+
+  textarea, input[type=text], input[type=number]{
+    width:100%;
+    border:2px solid #ece5fb;
+    border-radius:16px;
+    padding:14px 16px;
+    font-family:'Nunito', sans-serif;
+    font-size:.97rem;
+    resize:vertical;
+    min-height:48px;
+    outline:none;
+    transition:.2s ease;
+    background:#fdfbff;
+  }
+  textarea{ min-height:90px; }
+  textarea:focus, input:focus{ border-color:var(--blush); background:#fff; }
+
+  .other-input{ margin-top:8px; }
+
+  .nav-row{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-top:26px; gap:12px;
+  }
+  button{
+    font-family:'Nunito', sans-serif;
+    font-weight:800;
+    font-size:.95rem;
+    border:none;
+    border-radius:999px;
+    padding:13px 26px;
+    cursor:pointer;
+    transition:.2s ease;
+  }
+  button:focus-visible{ outline:3px solid var(--blush); outline-offset:2px; }
+  .btn-next{
+    background:linear-gradient(135deg, var(--blush), #f38fa4);
+    color:#fff;
+    box-shadow:0 8px 20px rgba(246,168,184,.45);
+    flex:1;
+  }
+  .btn-next:hover{ transform:translateY(-1px); box-shadow:0 10px 24px rgba(246,168,184,.55); }
+  .btn-next:disabled{ opacity:.4; cursor:not-allowed; transform:none; box-shadow:none; }
+  .btn-back{
+    background:transparent;
+    color:var(--text-mute);
+    padding:13px 14px;
+  }
+  .btn-back:hover{ color:var(--text-dark); }
+  .btn-start{
+    background:linear-gradient(135deg, var(--blush), var(--gold));
+    color:#fff;
+    width:100%;
+    padding:16px;
+    font-size:1.02rem;
+    box-shadow:0 10px 24px rgba(246,168,184,.5);
+  }
+  .btn-start:hover{ transform:translateY(-1px); }
+
+  .intro-emoji{ font-size:2.4rem; margin-bottom:10px; }
+
+  /* results */
+  .result-badge{
+    width:64px; height:64px; border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, #fff, var(--gold) 70%);
+    box-shadow:0 0 24px rgba(243,200,119,.7);
+    margin:0 auto 18px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.8rem;
+  }
+  .result-text{
+    background:#fff5f7;
+    border-radius:18px;
+    padding:18px 20px;
+    line-height:1.8;
+    font-size:.98rem;
+    color:var(--text-dark);
+    margin-bottom:14px;
+    white-space:pre-line;
+  }
+  .result-footer{
+    text-align:center;
+    color:var(--text-mute);
+    font-size:.88rem;
+    margin-top:16px;
+  }
+  .recap-toggle-row{ text-align:center; margin-top:18px; }
+  .btn-recap{
+    background:transparent;
+    border:2px solid #ece5fb;
+    color:var(--text-mute);
+    border-radius:999px;
+    padding:9px 18px;
+    font-size:.85rem;
+    font-weight:700;
+  }
+  .btn-recap:hover{ border-color:var(--blush); color:var(--text-dark); }
+  .recap-list{
+    margin-top:16px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    animation:fadeIn .3s ease;
+  }
+  .recap-item{
+    background:#fdfbff;
+    border:1px solid #ece5fb;
+    border-radius:14px;
+    padding:12px 16px;
+  }
+  .recap-q{
+    font-size:.82rem;
+    font-weight:800;
+    color:var(--blush);
+    margin-bottom:4px;
+  }
+  .recap-a{
+    font-size:.92rem;
+    color:var(--text-dark);
+    line-height:1.6;
+    white-space:pre-line;
+  }
+  .status-line{
+    text-align:center;
+    font-size:.82rem;
+    color:var(--text-mute);
+    margin-top:10px;
+    min-height:18px;
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="wrap">
+  <div class="card">
+
+    <!-- INTRO -->
+    <div class="step active" id="step-intro">
+      <div class="intro-emoji">🌙💫</div>
+      <h1>แบบทดสอบทำความรู้จักกัน</h1>
+      <p class="lead">อยากรู้จักเธอมากขึ้นอีกนิด เลยลองทำแบบทดสอบเล็กๆ แนวจิตวิทยาและความชอบขึ้นมาครับ
+ตอบครบแล้วจะมีสรุปสั้นๆ เกี่ยวกับตัวเธอให้ดูเล่นๆ
+
+ไม่มีคำตอบถูกหรือผิด ตอบตามความรู้สึกจริงใจได้เลยครับ 🤍</p>
+      <span class="hint">⏱ ใช้เวลาเพียง 1–2 นาทีเท่านั้นเองครับ</span>
+      <div class="nav-row" style="margin-top:26px;">
+        <button class="btn-start" id="startBtn">เริ่มทำแบบทดสอบ ✨</button>
+      </div>
+    </div>
+
+    <!-- QUIZ -->
+    <div class="step" id="step-quiz">
+      <div class="moon-track" id="moonTrack"></div>
+      <div class="progress-label" id="progressLabel"></div>
+
+      <div id="questionArea"></div>
+
+      <div class="nav-row">
+        <button class="btn-back" id="backBtn">← ย้อนกลับ</button>
+        <button class="btn-next" id="nextBtn">ถัดไป →</button>
+      </div>
+    </div>
+
+    <!-- SUBMITTING -->
+    <div class="step" id="step-sending">
+      <div class="intro-emoji">🌟</div>
+      <h1>รอสักครู่นะครับ...</h1>
+      <p class="lead">กำลังวิเคราะห์คำตอบของเธอ เพื่อสรุปผลให้ตรงกับตัวเธอที่สุด</p>
+    </div>
+
+    <!-- RESULT -->
+    <div class="step" id="step-result">
+      <div class="result-badge">💫</div>
+      <h1 id="resultTitle" style="text-align:center;">ผลลัพธ์ของเธอ</h1>
+      <div class="result-text" id="resultText"></div>
+
+      <div class="recap-toggle-row">
+        <button class="btn-recap" id="recapToggle" type="button">ดูคำตอบทั้งหมดของเธอ ↓</button>
+      </div>
+      <div class="recap-list" id="recapList" hidden></div>
+
+      <p class="result-footer">ผมได้รับคำตอบแล้ว ขอบคุณมากครับที่ช่วยทำให้ผมรู้จักเธอมากขึ้น 🤍</p>
+      <div class="status-line" id="statusLine"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ===================================================================
+   ตั้งค่า Discord Webhook ของคุณตรงนี้ก่อนใช้งานจริง
+   วิธีสร้าง: ไปที่ตั้งค่าช่องใน Discord > Integrations > Webhooks > New Webhook > Copy URL
+=================================================================== */
+const DISCORD_WEBHOOK_URL = "YOUR_DISCORD_WEBHOOK_URL_HERE";
+
+// ---------- stars background ----------
+const starsEl = document.getElementById('stars');
+for(let i=0;i<45;i++){
+  const s=document.createElement('div');
+  s.className='star';
+  const size=Math.random()*2.5+1;
+  s.style.width=s.style.height=size+'px';
+  s.style.left=Math.random()*100+'%';
+  s.style.top=Math.random()*100+'%';
+  s.style.animationDelay=(Math.random()*3.5)+'s';
+  starsEl.appendChild(s);
+}
+
+// ---------- questions ----------
+const questions = [
+  {
+    id:'q1', title:'ปัจจุบันเธอมีคนดูแล หรือมีแฟนแล้วหรือยังครับ?',
+    type:'radio',
+    options:['มีคนดูแล / มีแฟนแล้ว','ยังโสดอยู่','ขอไม่ตอบตอนนี้นะ']
+  },
+  {
+    id:'q2', title:'อายุเท่าไหร่แล้วครับ?',
+    type:'number', placeholder:'พิมพ์อายุ เช่น 25'
+  },
+  {
+    id:'q3', title:'ถ้าจะมองหาคนคุยหรือคนรัก สิ่งแรกที่ให้ความสำคัญที่สุดคืออะไรครับ?',
+    type:'radio',
+    options:['ความจริงใจ / ไว้ใจได้','อารมณ์ขัน คุยกันสนุก','ความเข้าใจ รับฟังกัน','ความมั่นคง / ฐานะ','อื่นๆ']
+  },
+  {
+    id:'q4', title:'ชอบคนที่แสดงความสนใจแบบไหนมากกว่ากันครับ?',
+    type:'radio',
+    options:['ตรงไปตรงมา บอกตรงๆ ว่าชอบ','ค่อยเป็นค่อยไป ใจเย็นๆ','ทำเซอร์ไพรส์เล็กๆ น่ารักๆ','ให้เวลาและใส่ใจสม่ำเสมอ']
+  },
+  {
+    id:'q5', title:'เวลาว่างชอบทำอะไรที่ทำให้มีความสุขที่สุดครับ?',
+    type:'textarea', placeholder:'เล่าให้ฟังหน่อยครับ...'
+  },
+  {
+    id:'q6', title:'ถ้าเปรียบตัวเองเป็นสิ่งของหรือสัตว์ จะเป็นอะไร และทำไมครับ?',
+    type:'textarea', placeholder:'เช่น แมว เพราะขี้อ้อนแต่ก็รักอิสระ...'
+  },
+  {
+    id:'q7', title:'สิ่งไหนที่ถ้ามีในตัวผู้ชาย จะทำให้ประทับใจที่สุดครับ?',
+    type:'textarea', placeholder:'เล่าให้ฟังหน่อยครับ...'
+  },
+  {
+    id:'q8', title:'สิ่งไหนที่รับไม่ได้ หรือทำให้ไม่อยากคุยด้วยครับ?',
+    type:'textarea', placeholder:'เล่าให้ฟังหน่อยครับ...'
+  },
+  {
+    id:'q9', title:'ถ้าได้ไปเดทกันครั้งแรก อยากไปทำอะไรที่ไหนมากที่สุดครับ?',
+    type:'textarea', placeholder:'เล่าให้ฟังหน่อยครับ...'
+  },
+  {
+    id:'q10', title:'อยากบอกอะไรเพิ่มเติมเกี่ยวกับตัวเองไหมครับ?',
+    type:'textarea', placeholder:'(ไม่บังคับ)', optional:true
+  }
+];
+
+const answers = {};
+let current = 0;
+
+// ---------- moon track ----------
+const moonTrack = document.getElementById('moonTrack');
+questions.forEach((_,i)=>{
+  const dot=document.createElement('div');
+  dot.className='moon-dot';
+  dot.id='dot-'+i;
+  moonTrack.appendChild(dot);
+});
+
+function updateProgress(){
+  questions.forEach((_,i)=>{
+    const dot=document.getElementById('dot-'+i);
+    dot.classList.toggle('filled', i < current);
+    dot.classList.toggle('current', i === current);
+  });
+  document.getElementById('progressLabel').textContent = `ข้อ ${current+1} จาก ${questions.length}`;
+}
+
+function renderQuestion(){
+  const q = questions[current];
+  const area = document.getElementById('questionArea');
+  let html = `<div class="q-title">${q.title}</div>`;
+
+  if(q.type==='radio'){
+    html += '<div class="options">';
+    q.options.forEach((opt,i)=>{
+      const checked = answers[q.id]?.choice === opt ? 'selected' : '';
+      html += `<label class="opt ${checked}" data-opt="${opt}">
+        <input type="radio" name="${q.id}" value="${opt}" ${answers[q.id]?.choice===opt?'checked':''}>
+        <span>${opt}</span>
+      </label>`;
+    });
+    html += '</div>';
+    if(q.options.includes('อื่นๆ')){
+      const otherVal = answers[q.id]?.other || '';
+      const show = answers[q.id]?.choice === 'อื่นๆ' ? '' : 'style="display:none"';
+      html += `<input type="text" class="other-input" id="other-${q.id}" placeholder="ระบุ..." value="${otherVal}" ${show}>`;
+    }
+  } else if(q.type==='textarea'){
+    html += `<textarea id="input-${q.id}" placeholder="${q.placeholder||''}">${answers[q.id]?.text||''}</textarea>`;
+  } else if(q.type==='number'){
+    html += `<input type="number" id="input-${q.id}" placeholder="${q.placeholder||''}" value="${answers[q.id]?.text||''}" min="1" max="120">`;
+  } else if(q.type==='text'){
+    html += `<input type="text" id="input-${q.id}" placeholder="${q.placeholder||''}" value="${answers[q.id]?.text||''}">`;
+  }
+
+  area.innerHTML = html;
+
+  if(q.type==='radio'){
+    area.querySelectorAll('.opt').forEach(label=>{
+      label.addEventListener('click', ()=>{
+        area.querySelectorAll('.opt').forEach(l=>l.classList.remove('selected'));
+        label.classList.add('selected');
+        const val = label.dataset.opt;
+        answers[q.id] = answers[q.id] || {};
+        answers[q.id].choice = val;
+        const otherBox = document.getElementById('other-'+q.id);
+        if(otherBox){
+          otherBox.style.display = val==='อื่นๆ' ? 'block' : 'none';
+        }
+        validateStep();
+      });
+    });
+    const otherBox = document.getElementById('other-'+q.id);
+    if(otherBox){
+      otherBox.addEventListener('input', ()=>{
+        answers[q.id] = answers[q.id] || {};
+        answers[q.id].other = otherBox.value;
+        validateStep();
+      });
+    }
+  } else {
+    const input = document.getElementById('input-'+q.id);
+    input.addEventListener('input', ()=>{
+      answers[q.id] = { text: input.value };
+      validateStep();
+    });
+  }
+
+  document.getElementById('backBtn').style.visibility = current===0 ? 'hidden':'visible';
+  document.getElementById('nextBtn').textContent = current===questions.length-1 ? 'ส่งคำตอบ 💌' : 'ถัดไป →';
+  validateStep();
+  updateProgress();
+}
+
+function validateStep(){
+  const q = questions[current];
+  const nextBtn = document.getElementById('nextBtn');
+  if(q.optional){ nextBtn.disabled=false; return; }
+  let ok=false;
+  if(q.type==='radio'){
+    const a = answers[q.id];
+    ok = !!a?.choice && (a.choice!=='อื่นๆ' || (a.other && a.other.trim().length>0));
+  } else {
+    ok = !!(answers[q.id]?.text && answers[q.id].text.trim().length>0);
+  }
+  nextBtn.disabled = !ok;
+}
+
+document.getElementById('startBtn').addEventListener('click', ()=>{
+  document.getElementById('step-intro').classList.remove('active');
+  document.getElementById('step-quiz').classList.add('active');
+  renderQuestion();
+});
+
+document.getElementById('backBtn').addEventListener('click', ()=>{
+  if(current>0){ current--; renderQuestion(); }
+});
+
+document.getElementById('nextBtn').addEventListener('click', ()=>{
+  if(current < questions.length-1){
+    current++;
+    renderQuestion();
+  } else {
+    submitQuiz();
+  }
+});
+
+function getAnswerDisplay(id){
+  const a = answers[id];
+  if(!a) return '(ไม่ได้ตอบ)';
+  if(a.choice){ return a.choice==='อื่นๆ' ? (a.other||'อื่นๆ') : a.choice; }
+  return a.text || '(ไม่ได้ตอบ)';
+}
+
+function staticFallbackSummary(){
+  const q3 = getAnswerDisplay('q3');
+  const q4 = getAnswerDisplay('q4');
+  const q5 = getAnswerDisplay('q5');
+  const q6 = getAnswerDisplay('q6');
+  const q9 = getAnswerDisplay('q9');
+  const relationshipStatus = getAnswerDisplay('q1');
+
+  let lines = [];
+  lines.push('จากคำตอบของเธอ เธอให้ความสำคัญกับ "'+q3+'" ในความสัมพันธ์ และชอบให้อีกฝ่ายแสดงความสนใจแบบ "'+q4+'"');
+  lines.push('เวลาว่างเธอชอบ "'+q5+'" และถ้าเปรียบตัวเองเป็นสิ่งของหรือสัตว์ เธอบอกว่า "'+q6+'" ซึ่งฟังดูเป็นตัวเธอมากครับ');
+  lines.push('ถ้ามีโอกาสได้ไปเดทกัน เธออยากให้เป็น "'+q9+'"');
+  if(relationshipStatus.includes('มีคนดูแล') || relationshipStatus.includes('มีแฟน')){
+    lines.push('เธอบอกว่าตอนนี้มีคนดูแลอยู่แล้ว ก็ขอให้รักษาความสัมพันธ์ดีๆ แบบนั้นไว้นะครับ เราคุยกันในฐานะเพื่อนที่ดีต่อกันก็ดีเหมือนกันครับ 🤍');
+  } else {
+    lines.push('โดยรวมคำตอบของเธอให้ความรู้สึกอบอุ่นและจริงใจมากครับ');
+  }
+  return { title:'ผลลัพธ์ของเธอ', body: lines.join('\n\n') };
+}
+
+async function generateAIResult(){
+  const qaText = questions.map(q => `Q: ${q.title}\nA: ${getAnswerDisplay(q.id)}`).join('\n\n');
+
+  const systemPrompt = `คุณคือนักจิตวิทยาความสัมพันธ์ที่อบอุ่นและมีวิจารณญาณที่ดี หน้าที่ของคุณคือวิเคราะห์คำตอบแบบทดสอบทำความรู้จักกันด้านล่าง แล้วเขียนผลสรุปเป็นภาษาไทย ทำตามโครงสร้างนี้เป๊ะๆ:
+
+บรรทัดแรก: ให้ขึ้นต้นด้วย "ประเภท: " ตามด้วยชื่อประเภทบุคลิกภาพสั้นๆ น่ารัก อิงจากคำตอบจริง (เช่น "สายอบอุ่นใส่ใจ", "สายอิสระมั่นใจในตัวเอง") ห้ามใช้ชื่อประเภทซ้ำแบบเดิมทุกครั้ง ต้องอิงจากคำตอบเฉพาะของคนนี้จริงๆ
+
+เว้นบรรทัด แล้วตามด้วยเนื้อหาวิเคราะห์ 180-260 คำ เขียนเป็นข้อความล้วน (ห้ามใช้ markdown, ห้ามใช้หัวข้อย่อย, ห้ามมี bullet) โดยข้อกำหนดสำคัญคือ:
+- ต้องอ่านคำตอบทุกข้อของเธอจริงๆ แล้ว "ตอบสนอง" ต่อคำตอบแต่ละข้ออย่างเจาะจง ไม่ใช่แค่สรุปรวมลอยๆ ให้หยิบอย่างน้อย 5-6 ข้อ (โดยเฉพาะข้อที่เธอเขียนตอบเอง เช่น เวลาว่าง, เปรียบตัวเองเป็นอะไร, สิ่งที่ประทับใจ, สิ่งที่รับไม่ได้, อยากเดทที่ไหน) มาพูดถึงตรงๆ ว่าอ่านแล้วรู้สึกอย่างไร ทำไมถึงรู้สึกแบบนั้น โดยอ้างอิงคำพูดหรือตัวเลือกของเธอจริงๆ ไม่ใช่คำชมเลื่อนลอยที่ใช้กับใครก็ได้
+- น้ำเสียงเหมือนคนที่ตั้งใจอ่านคำตอบของเธอทีละข้อจริงๆ แล้วสะท้อนความรู้สึกออกมาอย่างจริงใจ อบอุ่น เป็นธรรมชาติ ไม่ใช่แบบทดสอบบุคลิกภาพสำเร็จรูป
+- ห้ามเดาหรือแต่งเติมข้อมูลที่เธอไม่ได้บอก ให้ยึดจากคำตอบจริงเท่านั้น
+
+สำคัญมากที่สุด: ให้ตรวจคำตอบข้อ "ปัจจุบันเธอมีคนดูแล หรือมีแฟนแล้วหรือยังครับ?" ก่อนเสมอ
+- ถ้าคำตอบคือมีคนดูแลหรือมีแฟนแล้ว: ต้องแสดงความยินดีกับเธออย่างจริงใจ ให้เกียรติความสัมพันธ์ที่เธอมีอยู่ และบอกอย่างสุภาพตรงไปตรงมาว่าคงความสัมพันธ์นี้ไว้ในฐานะเพื่อนที่ดีต่อกันจะเหมาะสมกว่า ห้ามชวนเดทหรือพยายามพัฒนาความสัมพันธ์ในเชิงชู้สาวต่อโดยเด็ดขาด เพราะเธอมีคนสำคัญอยู่แล้ว ข้อที่เธอตอบเรื่องอยากเดทที่ไหนให้พูดถึงในเชิงเป็นข้อมูลทั่วไปเกี่ยวกับตัวเธอเท่านั้น (เช่น สไตล์ที่เธอชอบ) ไม่ใช่การชวนไปจริงหรือพูดถึงตัวเองในฐานะคนที่จะพาไป
+- ถ้าคำตอบคือยังโสด: วิเคราะห์บุคลิกของเธอต่อได้ตามปกติ ไม่ต้องเน้นประเด็นเรื่องความสัมพันธ์เป็นพิเศษ
+- ถ้าเธอขอไม่ตอบ: เคารพการตัดสินใจนั้น ไม่ต้องสันนิษฐานสถานะของเธอ และเลี่ยงพูดเรื่องการชวนเดทแบบเจาะจง`;
+
+  const response = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-6",
+      max_tokens: 1000,
+      system: systemPrompt,
+      messages: [
+        { role: "user", content: qaText }
+      ]
+    })
+  });
+
+  const data = await response.json();
+  const text = (data.content || [])
+    .map(item => item.type === 'text' ? item.text : '')
+    .join('\n')
+    .trim();
+
+  if(!text) throw new Error('empty-ai-response');
+
+  const typeMatch = text.match(/^ประเภท:\s*(.+)/m);
+  const title = typeMatch ? typeMatch[1].trim() : 'ผลลัพธ์ของเธอ';
+  const body = text.replace(/^ประเภท:\s*.+\n?/m, '').trim();
+
+  return { title, body: body || text };
+}
+
+async function submitQuiz(){
+  document.getElementById('step-quiz').classList.remove('active');
+  document.getElementById('step-sending').classList.add('active');
+
+  const payloadLines = questions.map(q => `**${q.title}**\n${getAnswerDisplay(q.id)}`).join('\n\n');
+  const statusLine = document.getElementById('statusLine');
+
+  const body = {
+    embeds:[{
+      title: "มีคำตอบแบบทดสอบใหม่เข้ามาแล้ว 💌",
+      description: payloadLines.slice(0,3800),
+      color: 16087416
+    }]
+  };
+
+  try{
+    if(!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL.includes('YOUR_DISCORD_WEBHOOK_URL_HERE')){
+      throw new Error('no-webhook');
+    }
+    await fetch(DISCORD_WEBHOOK_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    statusLine.textContent = '';
+  } catch(err){
+    statusLine.textContent = '';
+    console.warn('ยังไม่ได้ตั้งค่า Discord Webhook หรือส่งไม่สำเร็จ:', err);
+  }
+
+  let result;
+  try{
+    result = await generateAIResult();
+  } catch(err){
+    console.warn('AI ยังวิเคราะห์ไม่สำเร็จ ใช้ผลสรุปสำรองแทน:', err);
+    result = staticFallbackSummary();
+  }
+
+  document.getElementById('step-sending').classList.remove('active');
+  document.getElementById('step-result').classList.add('active');
+  document.getElementById('resultTitle').textContent = result.title;
+  document.getElementById('resultText').textContent = result.body;
+  renderRecap();
+}
+
+function renderRecap(){
+  const list = document.getElementById('recapList');
+  list.innerHTML = questions.map(q => `
+    <div class="recap-item">
+      <div class="recap-q">${q.title}</div>
+      <div class="recap-a">${getAnswerDisplay(q.id)}</div>
+    </div>
+  `).join('');
+}
+
+document.getElementById('recapToggle').addEventListener('click', ()=>{
+  const list = document.getElementById('recapList');
+  const btn = document.getElementById('recapToggle');
+  const hidden = list.hasAttribute('hidden');
+  if(hidden){
+    list.removeAttribute('hidden');
+    btn.textContent = 'ซ่อนคำตอบทั้งหมด ↑';
+  } else {
+    list.setAttribute('hidden','');
+    btn.textContent = 'ดูคำตอบทั้งหมดของเธอ ↓';
+  }
+});
+</script>
+
+</body>
+</html>
