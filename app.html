@@ -178,7 +178,6 @@ window.onhashchange=render;
 
 function page_home(){let c=charOf(me().username)||{};return layoutHead('CITY OVERVIEW','ศูนย์กลางเมือง RP','ข้อมูลสำคัญของตัวละครและบริการเมืองในหน้าเดียว')+`<div class="grid">
 <div class="card span3"><div class="stat"><div class="stat-icon">👤</div><div><strong>${esc(c.level||1)}</strong><small>Level ตัวละคร</small></div></div></div>
-<div class="card span3"><div class="stat"><div class="stat-icon">💰</div><div><strong>$${Number(c.money||0).toLocaleString()}</strong><small>เงินคงเหลือ</small></div></div></div>
 <div class="card span3"><div class="stat"><div class="stat-icon">🏢</div><div><strong style="font-size:16px">${esc(c.job||'พลเมือง')}</strong><small>อาชีพ / หน่วยงาน</small></div></div></div>
 <div class="card span3"><div class="stat"><div class="stat-icon">🚨</div><div><strong>${R(DB.dispatch).filter(x=>x.status!=='ปิดเคส').length}</strong><small>เหตุที่ยังเปิด</small></div></div></div>
 <div class="card span8"><h2>📰 ข่าวล่าสุด</h2><p class="muted">ข่าวเมืองและประกาศสำคัญ</p><div id="homeNews" style="margin-top:14px"></div></div>
